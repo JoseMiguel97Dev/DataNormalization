@@ -15,14 +15,14 @@ raw_data = []
 for i in range(1, 10001):
     fila = {
         "id": i,
-        "nombre": random.choice(nombres) + random.choice(apellidos),
-        "telefono": random.choice(telefonos),
-        "pais": random.choice(paises)
+        "name": random.choice(nombres) + random.choice(apellidos),
+        "phone": random.choice(telefonos),
+        "country": random.choice(paises)
     }
     raw_data.append(fila)
 
 # Convertir a DataFrame y guardar en un archivo CSV
 df = pd.DataFrame(raw_data)
-df.to_csv("datos_clientes.csv", index=False)
+df.to_csv("clients_raw_data.csv", index=False)
 
-print("[CORRECTO] Archivo 'datos_clientes.csv' creado con 10,000 filas.")
+print("[CORRECTO] Archivo 'clients_raw_data.csv' creado con 10,000 filas.")
