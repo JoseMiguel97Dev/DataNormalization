@@ -26,7 +26,7 @@ A professional ETL (Extract, Transform, Load) pipeline built in Python. This sys
 
 2. **Activate the virtual enviroment:**
 
-# On Windows (Git Bash):
+On Windows (Git Bash):
 source venv/Scripts/activate
 
 3. **Install dependencies:**
