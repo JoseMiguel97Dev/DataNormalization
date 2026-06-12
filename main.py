@@ -1,4 +1,5 @@
 import os
+import json
 import pandas as pd
 from openai import OpenAI
 
@@ -18,10 +19,10 @@ def extract_data(file_path):
    
     try:
         df = pd.read_csv(file_path)
-        print("[INFO] Datos extraídos correctamente.")
+        print("[INFO] Data extracted successfully")
         return df
     except Exception as e:
-        print(f"[ERROR] No se pudo leer el archivo: {e}")
+        print(f"[ERROR] Could not read the file: {e}")
         return None
 
 def normalize_row_with_ai(name, phone, country):
@@ -64,24 +65,39 @@ def normalize_row_with_ai(name, phone, country):
         
     return f'{{"name": "{clean_name}", "phone": "{clean_phone}", "country": "{clean_country}"}}'
 
-dirty_df = extract_data("datos_clientes.csv")
+dirty_df = extract_data("clients_raw_data.csv")
 
 if dirty_df is not None:
     print("\n[PROCESS] Starting data normalization...")
     
-    # Take the first 5 rows for local testing to get instant results
-    test_df = dirty_df.head(5).copy()
+    # Take the first 50 rows for local testing to get instant results
+    test_df = dirty_df.head(50).copy()
     
     normalization_results = []
     for idx, row in test_df.iterrows():
-        print(f"-> Processing row ID {row['id']}...")
+        print(f"Processing row ID {row['id']}")
         
         # Call the AI/Fallback normalization function
-        json_result = normalize_row_with_ai(row['nombre'], row['telefono'], row['pais'])
-        normalization_results.append(json_result)
+        json_result = normalize_row_with_ai(row['name'], row['phone'], row['country'])
         
-    print("\n Process Finished Successfully! ")
+        # Convert the JSON string into a Python dictionary before appending
+        clean_data = json.loads(json_result)
+        normalization_results.append(clean_data)
+        
+    print("\n--- Process Finished Successfully! ---")
     print("Structured JSON results ready for database insertion:")
+    
+    # This loop keeps showing the results in your terminal
     for result in normalization_results:
         print(result)
+        
+    # Phase 3: Data Export
+    print("\n[EXPORT] Saving cleaned data to a new CSV file...")
+    
+    # Create a new DataFrame from the list of cleaned dictionaries
+    clean_df = pd.DataFrame(normalization_results)
+    
+    # Save the DataFrame to a CSV file without the index column
+    clean_df.to_csv("cleaned_clients.csv", index=False)
+    print("[SUCCESS] Data successfully exported to 'cleaned_clients.csv'!")
 
