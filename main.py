@@ -1,3 +1,10 @@
+import os
+import pandas as pd
+import openai as OpenAI
+
+#AI client configuration
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
 def extract_data(file_path):
    
     try:
@@ -14,3 +21,4 @@ datos_cargados = extract_data("datos_clientes.csv")
 if datos_cargados is not None:
     print("\n--- Mostrando las primeras filas del archivo ---")
     print(datos_cargados.head())
+
